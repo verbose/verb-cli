@@ -1,0 +1,33 @@
+{
+  "name": "verb-cli",
+  "description": "CLI for Verb, the markdown documentation generator with zero-configuration required.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/assemble/verb-cli",
+  "author": {
+    "name": "Jon Schlinkert",
+    "url": "https://github.com/jonschlinkert"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/assemble/verb-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/assemble/verb-cli/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/assemble/verb-cli/blob/master/LICENSE-MIT"
+    }
+  ],
+  "main": "index.js",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "bin": {
+    "verb": "./bin/verb"
+  },
+  "dependencies": {
+    "verb": "~0.1.7"
+  }
+}
