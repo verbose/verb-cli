@@ -2,7 +2,11 @@
 
 > Command line tool for Verb, the markdown documentation generator with zero-configuration required.
 
-The command line tool for [Verb](https://github.com/assemble/verb). Also see [grunt-verb](https://github.com/jonschlinkert/grunt-verb).
+This is the command line tool for [Verb](https://github.com/assemble/verb).
+
+* Get [generator-verb](https://github.com/assemble/generator-verb) to add documentation templates, or initialize docs for new projects
+* Get [grunt-verb](https://github.com/assemble/grunt-verb) for your Grunt build-chains
+* Get [gulp-verb](https://github.com/assemble/gulp-verb) for your gulp build-chains
 
 ## What does verb-cli do?
 
