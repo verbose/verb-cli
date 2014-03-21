@@ -2,8 +2,7 @@
 
 > Command line tool for Verb, the markdown documentation generator with zero-configuration required.
 
-
-The command line tool for [Verb](https://github.com/assemble/verb).
+The command line tool for [Verb](https://github.com/assemble/verb). Also see [grunt-verb](https://github.com/jonschlinkert/grunt-verb).
 
 ## What does verb-cli do?
 
