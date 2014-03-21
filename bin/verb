@@ -11,7 +11,6 @@ process.title = 'verb';
 const path = require('path');
 const file = require('fs-utils');
 const configFile = require('config-file');
-const inquirer = require('inquirer');
 const relative = require('relative');
 const Liftoff = require('liftoff');
 const _ = require('lodash');
@@ -19,11 +18,9 @@ const _ = require('lodash');
 // Get your Verb on.
 const verb = require('verb'); // TODO: remove since we're using local verbs
 const meta = verb.verbMetadata;
-const colors = verb.colors;
 
 
 var localConfig = {};
-var localDir = process.cwd();
 var rc = '';
 
 if (file.exists('.verbrc.yml')) {
@@ -59,7 +56,7 @@ verb.runner = {
 
 var runtimeConfig = function(cwd, filename) {
   var filepath = path.join(cwd, filename);
-  return config.load(filepath);
+  return configFile.load(filepath);
 };
 
 
@@ -89,8 +86,8 @@ var cli = new Liftoff({
   addExtensions: ['rc', 'rc.yml', 'js'],
   preloadFlag: 'require',
   completionFlag: 'completion',
-  completions: function (type) {
-    verb.log('Completions not implemented.');
+  completions: function () {
+    verb.log.warn('Completions not implemented.');
   }
 });
 
@@ -106,8 +103,6 @@ cli.on('require', function (name, module) {
 cli.on('requireFail', function (name, err) {
   verb.log('Unable to require external module:', name, err);
 });
-
-cli.launch(handler);
 
 
 function handler (env) {
@@ -156,7 +151,6 @@ function handler (env) {
    * verfile.js / .verbrc / .verbrc.yml
    */
 
-  var verbfile;
   if (env.configPath) {
     if(env.configPath.indexOf('.js') !== -1) {
       localVerb.log('Loading verbfile:', env.configPath);
@@ -209,3 +203,6 @@ function handler (env) {
   // Log success messages
   verb.log.success('  Done');
 }
+
+
+cli.launch(handler);
