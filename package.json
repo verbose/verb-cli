@@ -1,7 +1,7 @@
 {
   "name": "verb-cli",
   "description": "Command line tool for Verb, the markdown documentation generator with zero-configuration required.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "homepage": "https://github.com/assemble/verb-cli",
   "author": {
     "name": "Jon Schlinkert",
@@ -28,11 +28,11 @@
     "verb": "./bin/verb"
   },
   "dependencies": {
-    "verb": "~0.1.7",
-    "relative": "~0.1.2",
-    "lodash": "~2.4.1",
-    "fs-utils": "~0.3.8",
+    "chalk": "~0.4.0",
     "config-file": "~0.1.6",
-    "liftoff": "~0.9.6"
+    "fs-utils": "~0.3.8",
+    "liftoff": "~0.9.6",
+    "lodash": "~2.4.1",
+    "relative": "~0.1.2"
   }
 }
