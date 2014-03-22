@@ -1,13 +1,7 @@
 #!/usr/bin/env node
 
-/**
- * TODO: all of this... make it real good-like.
- */
-
-// What's my name?
 process.title = 'verb';
 
-// Who do I depend on?
 const path = require('path');
 const file = require('fs-utils');
 const chalk = require('chalk');
@@ -120,7 +114,6 @@ function handler (env) {
   if (verbose) {
     verb.mode.verbose = true;
   }
-// console.log(vf);
 
   /**
    * Runtime config file
@@ -138,8 +131,9 @@ function handler (env) {
   };
 
 
-  // Get your Verb on.
+  // Load Verb's metadata
   var meta = verb.verbMetadata;
+
 
   /**
    * Update Verb's `runner` metadata with info about the
@@ -157,6 +151,7 @@ function handler (env) {
     name: "verb-cli",
     url: 'https://github.com/assemble/verb-cli'
   };
+
 
   /**
    * verfile.js / .verbrc / .verbrc.yml
