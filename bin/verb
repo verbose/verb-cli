@@ -2,6 +2,11 @@
 
 process.title = 'verb';
 
+/**
+ * A few tricks in this file were gleaned from
+ * node-liftoff and gulp's cli.
+ */
+
 const path = require('path');
 const file = require('fs-utils');
 const chalk = require('chalk');
@@ -80,17 +85,10 @@ var msg = {
 function handler (env) {
   var argv = env.argv,
     cliPackage = require('../package'),
-    versionFlag = argv.v || argv.version,
+    versionFlag = argv.version,
+    verbose = argv.v || argv.verbose,
     verbfile,
     verb;
-
-  if (versionFlag) {
-    console.log('  CLI version', cliPackage.version);
-    if (env.modulePackage) {
-      console.log('  Local version', env.modulePackage.version);
-    }
-    process.exit(0);
-  }
 
   process.chdir(env.cwd);
 
@@ -104,35 +102,22 @@ function handler (env) {
 
   if (!env.modulePath) {
     console.error(chalk.red('No local verb found in'), chalk.yellow(env.cwd));
-    console.error(chalk.red('Please run: \'npm install verb\''));
+    console.error(chalk.red('Please run: \'npm install verb --save-dev\''));
     process.exit(1);
   }
 
   verb = require(env.modulePath);
+  if (verbose) {verb.mode.verbose = true;}
 
-  var verbose = argv.v || argv.verbose;
-  if (verbose) {
-    verb.mode.verbose = true;
+  if (versionFlag) {
+    verb.log.write();
+    verb.log('  verb-cli', 'v' + cliPackage.version);
+    if (env.modulePackage) {
+      verb.log('  local verb', 'v' + env.modulePackage.version);
+    }
+    process.exit(0);
   }
 
-  /**
-   * Runtime config file
-   * Used to supply metadata to the
-   */
-
-  verb.verbrc = localConfig;
-
-  var opts = {
-    ext: '.md', // dest extension
-    cwd: env.configBase,
-    prefixBase: true,
-    destBase: argv.d || argv.dest || env.cwd,
-    verbose: verbose || false,
-  };
-
-  // var meta = verb.verb;
-  // verb.log.write();
-  // verb.log.subhead('Running Verb v', meta.version);
 
   /**
    * Update Verb's `runner` metadata with info about the
@@ -149,6 +134,21 @@ function handler (env) {
   verb.runner = {
     name: "verb-cli",
     url: 'https://github.com/assemble/verb-cli'
+  };
+
+  /**
+   * Runtime config file
+   * Used to supply metadata to the
+   */
+
+  verb.verbrc = localConfig;
+
+  var opts = {
+    ext: '.md', // dest extension
+    cwd: env.configBase,
+    prefixBase: true,
+    destBase: argv.d || argv.dest || env.cwd,
+    verbose: verbose || false,
   };
 
   /**
@@ -209,7 +209,7 @@ function handler (env) {
     });
   }
 
-  // Log success messages
+  // Log a success message.
   verb.log.success('  verb-cli [done]');
   return;
 }
