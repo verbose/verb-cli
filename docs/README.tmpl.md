@@ -2,6 +2,8 @@
 
 > {%= description %}
 
+_(Note that your project must have a `.verbrc.yml` or `.verbrc` for verb-cli to run!_. We're working on removing this requirement, [track progress here]()).
+
 This is the command line tool for [Verb](https://github.com/assemble/verb).
 
 * Get [generator-verb](https://github.com/assemble/generator-verb) to add documentation templates, or initialize docs for new projects

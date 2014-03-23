@@ -2,6 +2,8 @@
 
 > Command line tool for Verb, the markdown documentation generator with zero-configuration required.
 
+_Note that your project must have a `.verbrc.yml` or `.verbrc` for verb-cli to run!_. This temporary, please
+
 This is the command line tool for [Verb](https://github.com/assemble/verb).
 
 * Get [generator-verb](https://github.com/assemble/generator-verb) to add documentation templates, or initialize docs for new projects
