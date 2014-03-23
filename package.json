@@ -1,7 +1,7 @@
 {
   "name": "verb-cli",
   "description": "Command line tool for Verb, the markdown documentation generator with zero-configuration required.",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "homepage": "https://github.com/assemble/verb-cli",
   "author": {
     "name": "Jon Schlinkert",

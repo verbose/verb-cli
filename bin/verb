@@ -130,9 +130,9 @@ function handler (env) {
     verbose: verbose || false,
   };
 
-  var meta = verb.verb;
-  verb.log.write();
-  verb.log.subhead('Running Verb v', meta.version);
+  // var meta = verb.verb;
+  // verb.log.write();
+  // verb.log.subhead('Running Verb v', meta.version);
 
   /**
    * Update Verb's `runner` metadata with info about the
