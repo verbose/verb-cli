@@ -204,7 +204,7 @@ function handler (env) {
       verb.options = verb.options || {};
 
       var name = file.base(filepath) + opts.ext;
-      var dest = verb.cwd(opts.destBase, name);
+      var dest = path.join(cwd(opts.destBase), name);
 
       verb.options.src = filepath;
       verb.options.dest = dest;
