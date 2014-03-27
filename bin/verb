@@ -8,6 +8,7 @@ process.title = 'verb';
  */
 
 const path = require('path');
+const cwd = require('cwd');
 const file = require('fs-utils');
 const chalk = require('chalk');
 const configFile = require('config-file');
@@ -90,7 +91,11 @@ function handler (env) {
     verbfile,
     verb;
 
-  process.chdir(env.cwd);
+
+  // Make the cwd the root of the current project,
+  // regardless of where the command was run.
+  process.chdir(cwd(env.cwd));
+
 
   if (typeof env.configBase === 'undefined') {
     env.configBase = env.cwd;
