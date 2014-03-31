@@ -2,20 +2,20 @@
 
 > {%= description %}
 
-_(Note that your project must have a `.verbrc.yml` or `.verbrc` for verb-cli to run!_. We're working on removing this requirement, [track progress here]()).
-
 This is the command line tool for [Verb](https://github.com/assemble/verb).
 
+* Use Verb to generate and maintain markdown documentation for your projects. Use [Assemble](https://github.com/assemble/assemble) to generate a website from your Verb docs!
 * Get [generator-verb](https://github.com/assemble/generator-verb) to add documentation templates, or initialize docs for new projects
 * Get [grunt-verb](https://github.com/assemble/grunt-verb) for your Grunt build-chains
 * Get [gulp-verb](https://github.com/assemble/gulp-verb) for your gulp build-chains
+* Read [Verb's documentation](./DOCS.md) to learn more about Verb.
 
 ## What does verb-cli do?
 
 Unless you add a verbfile or a `.verbrc` config file to your project, running `verb` in the command line runs Verb using these basic settings:
 
 * `src`: files/templates with the `.tmpl.md` extension in the `docs/` directory of your project ("includes" can have any extension, usually `.md`)
-* Data from package.json and/or the local git repository is passed as metadata to templates. So `[%= name %]` yields `your-project-name`
+* Data from package.json and/or the local git repository is passed as metadata to templates. So `{%%= name %}` yields `your-project-name`
 * `dest`: files are rendered to the root of the project. e.g. `./docs/README.tmpl.md` => `./README.md`.
 
 ### Need more?

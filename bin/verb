@@ -88,6 +88,7 @@ function handler (env) {
     cliPackage = require('../package'),
     versionFlag = argv.version,
     verbose = argv.v || argv.verbose,
+    verbConfig = argv.config,
     verbfile,
     verb;
 
@@ -112,17 +113,6 @@ function handler (env) {
   }
 
   verb = require(env.modulePath);
-  if (verbose) {verb.mode.verbose = true;}
-
-  if (versionFlag) {
-    verb.log.write();
-    verb.log('  verb-cli', 'v' + cliPackage.version);
-    if (env.modulePackage) {
-      verb.log('  local verb', 'v' + env.modulePackage.version);
-    }
-    process.exit(0);
-  }
-
 
   /**
    * Update Verb's `runner` metadata with info about the
@@ -141,9 +131,30 @@ function handler (env) {
     url: 'https://github.com/assemble/verb-cli'
   };
 
+  if (verbose) {
+    verb.mode.verbose = true;
+  }
+
+  // Show the context in the console.
+  if (verbConfig) {
+    console.log(verb);
+  }
+
+  if (versionFlag) {
+    verb.log.write();
+    verb.log('  verb-cli\t', 'v' + cliPackage.version);
+    if (env.modulePackage) {
+      verb.log('  local verb\t', 'v' + env.modulePackage.version);
+    }
+    process.exit(0);
+  }
+
+
   /**
    * Runtime config file
-   * Used to supply metadata to the
+   *
+   * Used to supply metadata to templates and
+   * to configure options.
    */
 
   verb.verbrc = localConfig;
@@ -155,6 +166,7 @@ function handler (env) {
     destBase: argv.d || argv.dest || env.cwd,
     verbose: verbose || false,
   };
+
 
   /**
    * verfile.js / .verbrc / .verbrc.yml
