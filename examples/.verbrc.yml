@@ -1,0 +1,3 @@
+docs: _.md
+dest: BLAH.md
+data: foo.yml

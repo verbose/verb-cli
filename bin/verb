@@ -10,12 +10,15 @@ process.title = 'verb';
 const path = require('path');
 const cwd = require('cwd');
 const file = require('fs-utils');
-const chalk = require('chalk');
 const configFile = require('config-file');
 const relative = require('relative');
+const argv = require('minimist')(process.argv.slice(2));
 const Liftoff = require('liftoff');
+const log = require('verbalize');
 const _ = require('lodash');
 
+// Verbalize `runner`
+log.runner = 'verb-cli';
 
 var localConfig = {};
 var rc = '';
@@ -43,11 +46,11 @@ var vf = file.exists('verbfile.js') ? 'verbfile' : '.verb';
 var cli = new Liftoff({
   name: 'verb',
   configName: vf,
-  addExtensions: ['rc', 'rc.yml', 'js'],
+  addExtensions: ['rc', 'rc.yml', 'rc.md', 'js'],
   preloadFlag: 'require',
   completionFlag: 'completion',
   completions: function () {
-    console.warn('Completions not implemented.');
+    log.warn('Completions not implemented.');
   }
 });
 
@@ -56,12 +59,12 @@ cli.on('require', function (name, module) {
   if (name === 'coffee-script') {
     module.register();
   }
-  console.log('Requiring external module:', name);
+  log.writeln('  Requiring external module:', name);
 });
 
 
 cli.on('requireFail', function (name, err) {
-  console.log('Unable to require external module:', name, err);
+  log.writeln('  Unable to require external module:', name, err);
 });
 
 
@@ -72,23 +75,44 @@ cli.on('requireFail', function (name, err) {
 var msg = {
   noTemplates: function(dir) {
     var text = [
-      '  verb-cli [skipping] · ' + chalk.gray('no templates found in \'' + dir + '\'.'),
-      '                        ' + chalk.gray('verb-cli requires templates to have \'.tmpl.md\' extension.'),
-      '                        ' + chalk.gray('Visit the verb-cli project to learn how to customize:'),
+      '  verb-cli [skipping] · ' + log.bold('no templates found in \'' + dir + '\'.'),
+      '                        ' + log.gray('verb-cli requires templates to have a \'.tmpl.md\' extension.'),
+      '                        ' + log.gray('Visit the verb-cli project to learn how to customize this:'),
       '                        https://github.com/assemble/verb-cli'
     ].join('\n');
     return text;
+  },
+  displayHelp: function() {
+    log.writeln();
+    log.writeln('  Usage:');
+    log.writeln(log.gray('   List repos for a user:'), log.bold(' repos USERNAME [args]'));
+    log.writeln(log.gray('   List repos for an org:'), log.bold(' repos -o ORG-NAME [args]'));
+    log.writeln();
+    log.writeln('  General options:');
+    log.writeln('   -h, --help', log.gray(' # Print options and usage information.'));
+    log.writeln('   -u, --user', log.gray(' # List repos for the specified GitHub username.'));
+    log.writeln('   -o, --org', log.gray('  # List repos for the specified GitHub org.'));
+    log.writeln('   -d, --dest', log.gray(' # The destination file. Default is `repos.json`'));
+    log.writeln();
   }
 };
 
 
+// Use `-v` or `--verbose` for verbose logging
+log.mode.verbose = argv.v || argv.verbose || false;
+var help = argv.h || argv.help;
+
+if (help) {
+  displayHelp();
+}
+
 
 function handler (env) {
-  var argv = env.argv,
-    cliPackage = require('../package'),
-    versionFlag = argv.version,
-    verbose = argv.v || argv.verbose,
-    verbConfig = argv.config,
+  var argvEnv = env.argv,
+    cliPackage  = require('../package'),
+    versionFlag = argvEnv.version,
+    verbose     = argvEnv.v || argvEnv.verbose,
+    verbConfig  = argvEnv.config,
     verbfile,
     verb;
 
@@ -107,8 +131,8 @@ function handler (env) {
    */
 
   if (!env.modulePath) {
-    console.error(chalk.red('No local verb found in'), chalk.yellow(env.cwd));
-    console.error(chalk.red('Please run: \'npm install verb --save-dev\''));
+    log.error('  No local verb found in', chalk.yellow(env.cwd));
+    log.error('  Please run: \'npm install verb --save-dev\'');
     process.exit(1);
   }
 
@@ -137,14 +161,14 @@ function handler (env) {
 
   // Show the context in the console.
   if (verbConfig) {
-    console.log(verb);
+    log.writeln(verb);
   }
 
   if (versionFlag) {
-    verb.log.write();
-    verb.log('  verb-cli\t', 'v' + cliPackage.version);
+    log.writeln();
+    log.writeln(log.gray('  verb-cli\t', 'v') + cliPackage.version);
     if (env.modulePackage) {
-      verb.log('  local verb\t', 'v' + env.modulePackage.version);
+      log.writeln(log.gray('  local verb\t', 'v') + env.modulePackage.version);
     }
     process.exit(0);
   }
@@ -156,17 +180,33 @@ function handler (env) {
    * Used to supply metadata to templates and
    * to configure options.
    */
+  var matter;
+  if (file.exists('.verbrc.md')) {
+    matter = verb.matter(file.readFileSync('.verbrc.md'));
+    if (matter.context && _.keys(matter.context).length > 0) {
+      verb.verbrc = matter.context;
+    }
+  } else {
+    verb.verbrc = localConfig;
+  }
 
-  verb.verbrc = localConfig;
+  // if (file.exists('.assemblerc.yml')) {
+  //   var assemblerc = file.readYAMLSync('.assemblerc.yml');
+  //   if (assemblerc.verb) {
+  //     verb.verbrc = assemblerc.verb;
+  //   }
+  // }
+
 
   var opts = {
     ext: '.md', // dest extension
     cwd: env.configBase,
     prefixBase: true,
-    destBase: argv.d || argv.dest || env.cwd,
+    destBase: env.cwd,
     verbose: verbose || false,
   };
 
+  verb.init(opts);
 
   /**
    * verfile.js / .verbrc / .verbrc.yml
@@ -174,28 +214,49 @@ function handler (env) {
 
   if (env.configPath) {
     if(env.configPath.indexOf('.js') !== -1) {
-      verb.log('\n  Loading verbfile:', env.configPath);
+      log.writeln(log.bold('\n  Loading verbfile'), log.sep, file.normalizeSlash(env.configPath));
       verbfile = require(env.configPath)(verb);
-    } else if (env.configPath.indexOf('.verb') !== -1) {
-      verb.log('\n  Loading Verb config:', env.configPath);
-      verbfile = file.readDataSync(env.configPath);
+    } else if (env.configPath.indexOf('.verbrc') !== -1) {
+      log.writeln(log.bold('\n  Loading Verb config'), log.sep, file.normalizeSlash(env.configPath));
+      verbfile = verb.verbrc;
 
       // Extend the default options with
       // the contents of the config file.
       _.extend(opts, verbfile);
     }
-
-    // Skip the default verb-cli task by defining `readme: false`
-    if(verb.context && verb.context.readme === false) {
-      verb.log.run('skipping', 'default task.');
-      return;
-    }
   }
 
-  // Specify the docs dir with -d or -dir
-  var dir = argv.s || argv.src || opts.docs;
-  var docsBase = relative(env.configBase, dir || verb.docs);
-  var docs = path.join(docsBase, '*.tmpl.md');
+
+  // Skip the default verb-cli task by defining `readme: false`
+  if(opts.readme === false) {
+    log.warn('  skipping default task.');
+    return;
+  }
+
+
+  var dir  = argv.dir || opts.docs;
+  var ext  = argv.e || argv.ext;
+  var src  = argv._[0] || argv.s || argv.src;
+  var dest = argv._[1] || argv.d || argv.dest || opts.dest;
+
+  if (src && !file.hasExt(src)) {
+    src = src + (ext || opts.ext);
+  }
+
+  console.log(file.expand(opts.docs));
+
+
+  // Specify the docs dir with --dir
+  var docsBase = path.resolve(env.configBase, dir || verb.docs);
+
+  var docs = docsBase;
+  if (!file.hasExt(docsBase)) {
+    docs = docsBase;
+  }
+
+  if (src) {
+    docs = src;
+  }
 
 
   /**
@@ -203,31 +264,38 @@ function handler (env) {
    */
 
   // Task start
-  verb.log.write();
-  verb.log.subhead('reading', file.normalizeSlash(docs));
-
+  log.write();
   var files = file.expand(docs, opts);
 
-  if (!files.length) {
-    verb.log.warn(msg.noTemplates(docsBase));
+  if (matter) {
+    var dest =  'README.md';
+    var output = verb.process(matter.content, opts).content;
+    if (matter.context && matter.context.dest) {
+      dest = matter.context.dest;
+    }
+    log.inform('writing', relative(env.configBase, dest));
+    file.writeFileSync(relative(env.configBase, dest), output);
+  } else if (!files.length) {
+    log.warn(msg.noTemplates(docs));
   } else {
-    files.map(function(filepath) {
-      verb.init(opts);
-      verb.options = verb.options || {};
+    files.map(function (filepath) {
+      log.subhead('reading', relative(file.normalizeSlash(filepath)));
 
+      verb.options = verb.options || {};
       var name = file.base(filepath) + opts.ext;
-      var dest = path.join(cwd(opts.destBase), name);
+      var destination = dest || path.join(cwd(opts.destBase), name);
 
       verb.options.src = filepath;
-      verb.options.dest = dest;
+      verb.options.dest = destination;
+      _.extend(verb.options, opts);
 
-      file.writeFileSync(dest, verb.read(filepath, opts));
-      verb.log.run('writing', relative(env.configBase, dest));
+      log.inform('writing', relative(env.configBase, destination));
+      file.writeFileSync(destination, verb.read(filepath, verb.options));
     });
   }
 
   // Log a success message.
-  verb.log.success('  verb-cli [done]');
+  log.done('done');
   return;
 }
 
