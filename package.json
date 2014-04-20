@@ -28,14 +28,14 @@
     "verb": "./bin/verb"
   },
   "dependencies": {
-    "chalk": "~0.4.0",
-    "config-file": "~0.1.6",
-    "cwd": "~0.3.0",
-    "fs-utils": "~0.3.8",
+    "cwd": "~0.3.1",
     "liftoff": "~0.9.8",
     "lodash": "~2.4.1",
     "minimist": "0.0.8",
     "relative": "~0.1.3",
-    "verbalize": "~0.1.2"
+    "plasma": "~0.2.1",
+    "verbalize": "~0.1.2",
+    "fs-utils": "~0.4.0",
+    "ware": "~0.2.1"
   }
 }
