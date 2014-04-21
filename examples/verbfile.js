@@ -1,6 +1,6 @@
 
-
-module.exports = function(verb, options) {
+module.exports = function(verb) {
+  var options = verb.options || {};
   var plugins = {};
 
   plugins.tranform = function(str) {
