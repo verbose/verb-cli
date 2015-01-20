@@ -1,43 +1,47 @@
 {
   "name": "verb-cli",
-  "description": "Command line tool for Verb, the markdown documentation generator with zero-configuration required.",
-  "version": "0.2.5",
-  "homepage": "https://github.com/assemble/verb-cli",
+  "description": "CLI for Verb.",
+  "version": "0.3.0",
+  "homepage": "https://github.com/verbose/verb-cli",
   "author": {
     "name": "Jon Schlinkert",
     "url": "https://github.com/jonschlinkert"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/assemble/verb-cli.git"
-  },
+  "repository": "verbose/verb-cli",
   "bugs": {
-    "url": "https://github.com/assemble/verb-cli/issues"
+    "url": "https://github.com/verbose/verb-cli/issues"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/assemble/verb-cli/blob/master/LICENSE-MIT"
-    }
-  ],
-  "main": "index.js",
-  "engines": {
-    "node": ">= 0.8.0"
+  "license": {
+    "type": "MIT",
+    "url": "https://github.com/verbose/verb-cli/blob/master/LICENSE-MIT"
   },
+  "preferGlobal": true,
   "bin": {
-    "verb": "./bin/verb"
+    "verb": "./bin/verb.js"
   },
+  "main": "index.js",
+  "engineStrict": true,
+  "engines": {
+    "node": ">= 0.9"
+  },
+  "files": [
+    "index.js",
+    "lib",
+    "bin",
+    "completion"
+  ],
   "dependencies": {
-    "cwd": "~0.3.3",
-    "fs-utils": "~0.4.0",
-    "liftoff": "~0.9.8",
-    "lodash": "~2.4.1",
-    "minimist": "0.0.8",
-    "relative": "~0.1.4",
-    "verbalize": "~0.1.2",
-    "plasma": "~0.2.7"
-  },
-  "devDependencies": {
-    "verb": "~0.2.2"
+    "archy": "^1.0.0",
+    "chalk": "^0.5.1",
+    "gulp-util": "^3.0.2",
+    "interpret": "^0.4.2",
+    "liftoff": "^2.0.0",
+    "minimist": "^1.1.0",
+    "pretty-hrtime": "^1.0.0",
+    "resolve": "^1.0.0",
+    "semver": "^4.2.0",
+    "tildify": "^1.0.0",
+    "v8flags": "^2.0.2",
+    "verb": "^0.3.9"
   }
 }
