@@ -12,10 +12,9 @@ var fs = require('fs');
 var path = require('path');
 var archy = require('archy');
 var chalk = require('chalk');
-var semver = require('semver');
+var tildify = require('tildify');
 var gutil = require('gulp-util');
 var Liftoff = require('liftoff');
-var tildify = require('tildify');
 var v8flags = require('v8flags');
 var resolve = require('resolve');
 var interpret = require('interpret');
@@ -28,11 +27,11 @@ var verb = require('verb');
  */
 
 var completion = require('../lib/completion');
-var taskTree = require('../lib/taskTree');
+var taskTree = require('../lib/task-tree');
 var pkg = require('../package');
 
 
-// set env var for original cwd before anything touches it
+// store a reference to the current CWD
 process.env.INIT_CWD = process.cwd();
 
 var cli = new Liftoff({
@@ -58,9 +57,10 @@ var versionFlag = argv.v || argv.version;
 var tasksFlag = argv.T || argv.tasks;
 var tasks = argv._;
 var toRun = tasks.length ? tasks : ['default'];
-var simpleTasksFlag = argv.s || argv['tasks-simple'];
 
+var simpleTasksFlag = argv['tasks-simple'];
 var shouldLog = !argv.silent && !simpleTasksFlag;
+
 if (!shouldLog) {
   gutil.log = function(){};
 }
@@ -98,26 +98,19 @@ function handleArguments(env) {
     if (env.modulePackage && typeof env.modulePackage.version !== 'undefined') {
       gutil.log('Local version', env.modulePackage.version);
     }
-    exit(0);
   }
+
 
   // local node_modules/verb
-  if (!env.modulePath) {
-    env.modulePath = path.resolve(__dirname, '..');
+  if (!verbfile || !env.modulePath || !fs.existsSync(env.modulePath)) {
+    env.modulePath = resolve.sync('verb');
   }
-
-  // check for semver difference between cli and local installation
-  // if (semver.gt(pkg.version, env.modulePackage.version)) {
-  //   gutil.log(chalk.red('Warning: verb version mismatch:'));
-  //   gutil.log(chalk.red('Global verb is', pkg.version));
-  //   gutil.log(chalk.red('Local verb is', env.modulePackage.version));
-  // }
 
   // chdir before requiring verbfile to make sure
   // we let them chdir as needed
   if (process.cwd() !== env.cwd) {
     process.chdir(env.cwd);
-    gutil.log('working directory changed to', chalk.gray(tildify(env.cwd)));
+    gutil.log('working directory changed to', tildify(env.cwd));
   }
 
   // local verbfile.js
@@ -130,11 +123,7 @@ function handleArguments(env) {
     require(verbfile);
   }
 
-  gutil.log('using verbfile', chalk.gray(tildify(verbfile)));
-
-  if (!env.modulePath || !fs.existsSync(env.modulePath)) {
-    env.modulePath = require('..');
-  }
+  gutil.log('using verbfile', tildify(verbfile));
 
   var verbInst = require(env.modulePath);
   logEvents(verbInst);
@@ -146,13 +135,13 @@ function handleArguments(env) {
     if (tasksFlag) {
       return logTasks(env, verbInst);
     }
-    verbInst.start.apply(verbInst, toRun);
+    verbInst.run.apply(verbInst, toRun);
   });
 }
 
 function logTasks(env, localVerb) {
   var tree = taskTree(localVerb.tasks);
-  tree.label = 'Tasks for ' + chalk.gray(tildify(verbfile));
+  tree.label = 'Tasks for ' + tildify(env.configPath);
   archy(tree).split('\n').forEach(function (v) {
     if (v.trim().length === 0) {
       return;

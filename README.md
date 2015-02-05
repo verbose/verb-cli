@@ -10,11 +10,7 @@ npm i -g verb-cli
 
 ## Usage
 
-In the command line, run:
-
-```bash
-verb
-```
+Run `verb` in the command line to run the default tasks.
 
 **Specific tasks**
 
@@ -29,7 +25,7 @@ verb docs lint watch
 Install dev dependencies:
 
 ```bash
-node i -d && mocha
+npm i -d && npm test
 ```
 
 ## Contributing
