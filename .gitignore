@@ -14,3 +14,4 @@ _gh_pages
 tmp
 temp
 vendor
+/.DS_Store

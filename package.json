@@ -19,7 +19,7 @@
   "bin": {
     "verb": "./bin/verb.js"
   },
-  "main": "index.js",
+  "main": "bin/verb.js",
   "engineStrict": true,
   "engines": {
     "node": ">= 0.9"
@@ -33,15 +33,15 @@
   "dependencies": {
     "archy": "^1.0.0",
     "chalk": "^0.5.1",
+    "cwdify": "^0.1.2",
     "gulp-util": "^3.0.2",
     "interpret": "^0.4.2",
     "liftoff": "^2.0.0",
     "minimist": "^1.1.0",
     "pretty-hrtime": "^1.0.0",
     "resolve": "^1.0.0",
-    "semver": "^4.2.0",
-    "tildify": "^1.0.0",
     "v8flags": "^2.0.2",
-    "verb": "^0.3.9"
+    "verb": "^0.3.9",
+    "verb-default": "^1.0.0"
   }
 }
