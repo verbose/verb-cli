@@ -1,7 +1,7 @@
 {
   "name": "verb-cli",
   "description": "CLI for Verb.",
-  "version": "0.4.0",
+  "version": "0.4.2-beta",
   "homepage": "https://github.com/verbose/verb-cli",
   "author": {
     "name": "Jon Schlinkert",
@@ -13,16 +13,11 @@
   },
   "license": {
     "type": "MIT",
-    "url": "https://github.com/verbose/verb-cli/blob/master/LICENSE-MIT"
+    "url": "https://github.com/verbose/verb-cli/blob/master/LICENSE"
   },
   "preferGlobal": true,
   "bin": {
     "verb": "./bin/verb.js"
-  },
-  "main": "bin/verb.js",
-  "engineStrict": true,
-  "engines": {
-    "node": ">= 0.9"
   },
   "files": [
     "index.js",
@@ -30,6 +25,11 @@
     "bin/",
     "completion/"
   ],
+  "main": "bin/verb.js",
+  "engineStrict": true,
+  "engines": {
+    "node": ">= 0.9"
+  },
   "dependencies": {
     "archy": "^1.0.0",
     "chalk": "^0.5.1",
@@ -41,7 +41,6 @@
     "resolve": "^1.1.0",
     "tildify": "^1.0.0",
     "v8flags": "^2.0.2",
-    "verb": "^0.3.9",
-    "verb-default": "^1.0.0"
+    "verb": "^0.4.4"
   }
 }
