@@ -1,4 +1,5 @@
 # Always-ignore files
+*.DS_Store
 *.rar
 *.sublime-*
 *.zip
