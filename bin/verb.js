@@ -17,7 +17,6 @@ var gutil = require('gulp-util');
 var Liftoff = require('liftoff');
 var v8flags = require('v8flags');
 var resolve = require('resolve');
-var interpret = require('interpret');
 var prettyTime = require('pretty-hrtime');
 var argv = require('minimist')(process.argv.slice(2));
 var verb = require('verb');
@@ -37,7 +36,7 @@ process.env.INIT_CWD = process.cwd();
 var cli = new Liftoff({
   name: 'verb',
   completions: completion,
-  extensions: interpret.jsVariants,
+  extensions: { '.js': null, '.coffee': 'coffee-script/register' },
   nodeFlags: v8flags
 });
 
@@ -85,11 +84,11 @@ cli.launch({
   configPath: argv.verbfile,
   require: argv.require,
   completion: argv.completion
-}, handleArguments);
+}, run);
 
 
 // the actual logic
-function handleArguments(env) {
+function run(env) {
   console.log(); // empty line
   var verbfile = env.configPath;
 
@@ -99,7 +98,6 @@ function handleArguments(env) {
       gutil.log('Local version', env.modulePackage.version);
     }
   }
-
 
   // local node_modules/verb
   if (!verbfile || !env.modulePath || !fs.existsSync(env.modulePath)) {
