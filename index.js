@@ -1,4 +1,4 @@
 'use strict';
 
-/* deps: verb-default */
+/* deps:verb-default */
 module.exports = require('./bin/verb');
