@@ -19,15 +19,18 @@ var v8flags = require('v8flags');
 var resolve = require('resolve');
 var prettyTime = require('pretty-hrtime');
 var argv = require('minimist')(process.argv.slice(2));
+
 var verb = require('verb');
+verb.extend('argv', argv);
+verb.emit('init');
 
 /**
  * Local dependencies
  */
 
-var completion = require('../lib/completion');
-var taskTree = require('../lib/task-tree');
-var pkg = require('../package');
+var completion = require('./lib/completion');
+var taskTree = require('./lib/task-tree');
+var pkg = require('./package');
 
 
 // store a reference to the current CWD
@@ -99,30 +102,32 @@ function run(env) {
     }
   }
 
-  // local node_modules/verb
+  // `node_modules/verb`
   if (!verbfile || !env.modulePath || !fs.existsSync(env.modulePath)) {
     env.modulePath = resolve.sync('verb');
   }
 
-  // chdir before requiring verbfile to make sure
-  // we let them chdir as needed
+  // chdir before requiring `verbfile.js` to allow users to chdir as needed
   if (process.cwd() !== env.cwd) {
     process.chdir(env.cwd);
     gutil.log('working directory changed to', tildify(env.cwd));
   }
 
-  // local verbfile.js
+  // `verbfile.js`
   if (!verbfile) {
     verbfile = resolve.sync('verb-default');
     env.configBase = path.dirname(env.configBase);
+    verb.emit('pre-load');
     require(verbfile)(verb);
   } else {
     // this is what actually loads up the verbfile
+    verb.emit('pre-load');
     require(verbfile);
   }
 
   gutil.log('using verbfile', tildify(verbfile));
 
+  // require verb
   var verbInst = require(env.modulePath);
   logEvents(verbInst);
 
@@ -136,6 +141,7 @@ function run(env) {
     verbInst.run.apply(verbInst, toRun);
   });
 }
+
 
 function logTasks(env, localVerb) {
   var tree = taskTree(localVerb.tasks);

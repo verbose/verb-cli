@@ -15,13 +15,12 @@
   "files": [
     "index.js",
     "completion/",
-    "lib/",
-    "bin/"
+    "lib/"
   ],
-  "main": "bin/verb.js",
+  "main": "cli.js",
   "preferGlobal": true,
   "bin": {
-    "verb": "./bin/verb.js"
+    "verb": "cli.js"
   },
   "engineStrict": true,
   "engines": {
@@ -30,6 +29,7 @@
   "dependencies": {
     "archy": "^1.0.0",
     "chalk": "^1.0.0",
+    "data-store": "^0.4.1",
     "gulp-util": "^3.0.4",
     "liftoff": "^2.0.2",
     "minimist": "^1.1.0",
