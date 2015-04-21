@@ -1,7 +1,7 @@
 {
   "name": "verb-cli",
   "description": "CLI for Verb.",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "homepage": "https://github.com/verbose/verb-cli",
   "author": {
     "name": "Jon Schlinkert",
@@ -15,12 +15,13 @@
   "files": [
     "index.js",
     "completion/",
-    "lib/"
+    "lib/",
+    "bin/"
   ],
-  "main": "bin/verb.js",
+  "main": "./bin/verb.js",
   "preferGlobal": true,
   "bin": {
-    "verb": "bin/verb.js"
+    "verb": "./bin/verb.js"
   },
   "engineStrict": true,
   "engines": {
@@ -30,12 +31,12 @@
     "archy": "^1.0.0",
     "chalk": "^1.0.0",
     "gulp-util": "^3.0.4",
-    "liftoff": "^2.0.2",
-    "minimist": "^1.1.0",
+    "liftoff": "^2.0.3",
+    "minimist": "^1.1.1",
     "pretty-hrtime": "^1.0.0",
-    "resolve": "^1.1.5",
+    "resolve": "^1.1.6",
     "tildify": "^1.0.0",
-    "v8flags": "^2.0.2",
+    "v8flags": "^2.0.5",
     "verb": "^0.6.2",
     "verb-default": "^1.1.0"
   }
