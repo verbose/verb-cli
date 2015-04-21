@@ -24,6 +24,10 @@ var verb = require('verb');
 verb.extend('argv', argv);
 verb.emit('init');
 
+if (!argv._.length && argv.no) {
+  exit(0);
+}
+
 /**
  * Local dependencies
  */
