@@ -1,7 +1,7 @@
 {
   "name": "verb-cli",
   "description": "CLI for Verb.",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "homepage": "https://github.com/verbose/verb-cli",
   "author": {
     "name": "Jon Schlinkert",
@@ -17,10 +17,10 @@
     "completion/",
     "lib/"
   ],
-  "main": "cli.js",
+  "main": "bin/verb.js",
   "preferGlobal": true,
   "bin": {
-    "verb": "cli.js"
+    "verb": "bin/verb.js"
   },
   "engineStrict": true,
   "engines": {
