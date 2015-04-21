@@ -32,9 +32,9 @@ if (!argv._.length && argv.no) {
  * Local dependencies
  */
 
-var completion = require('./lib/completion');
-var taskTree = require('./lib/task-tree');
-var pkg = require('./package');
+var completion = require('../lib/completion');
+var taskTree = require('../lib/task-tree');
+var pkg = require('../package');
 
 
 // store a reference to the current CWD
