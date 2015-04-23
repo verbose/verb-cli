@@ -1,7 +1,7 @@
 {
   "name": "verb-cli",
   "description": "CLI for Verb.",
-  "version": "0.5.3",
+  "version": "0.6.0",
   "homepage": "https://github.com/verbose/verb-cli",
   "author": {
     "name": "Jon Schlinkert",
@@ -37,7 +37,7 @@
     "resolve": "^1.1.6",
     "tildify": "^1.0.0",
     "v8flags": "^2.0.5",
-    "verb": "^0.6.2",
+    "verb": "^0.7.0",
     "verb-default": "^1.1.0"
   }
 }
