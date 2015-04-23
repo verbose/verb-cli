@@ -1,7 +1,7 @@
 {
   "name": "verb-cli",
   "description": "CLI for Verb.",
-  "version": "0.6.0",
+  "version": "0.6.2",
   "homepage": "https://github.com/verbose/verb-cli",
   "author": {
     "name": "Jon Schlinkert",
