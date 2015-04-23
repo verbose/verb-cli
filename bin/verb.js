@@ -20,14 +20,6 @@ var resolve = require('resolve');
 var prettyTime = require('pretty-hrtime');
 var argv = require('minimist')(process.argv.slice(2));
 
-var verb = require('verb');
-verb.extend('argv', argv);
-verb.emit('init');
-
-if (!argv._.length && argv.no) {
-  exit(0);
-}
-
 /**
  * Local dependencies
  */
@@ -36,7 +28,6 @@ var completion = require('../lib/completion');
 var taskTree = require('../lib/task-tree');
 var pkg = require('../package');
 
-
 // store a reference to the current CWD
 process.env.INIT_CWD = process.cwd();
 
@@ -44,7 +35,7 @@ var cli = new Liftoff({
   name: 'verb',
   completions: completion,
   extensions: { '.js': null, '.coffee': 'coffee-script/register' },
-  nodeFlags: v8flags
+  v8flags: v8flags
 });
 
 // exit with 0 or 1
@@ -108,6 +99,7 @@ function run(env) {
 
   // `node_modules/verb`
   if (!verbfile || !env.modulePath || !fs.existsSync(env.modulePath)) {
+    /* deps: verb */
     env.modulePath = resolve.sync('verb');
   }
 
@@ -117,22 +109,29 @@ function run(env) {
     gutil.log('working directory changed to', tildify(env.cwd));
   }
 
+  // require verb
+  var verbInst = require(env.modulePath);
+  verbInst.extend('argv', argv);
+  verbInst.emit('init');
+
+  if (!argv._.length && argv.no) {
+    exit(0);
+  }
+
   // `verbfile.js`
   if (!verbfile) {
     verbfile = resolve.sync('verb-default');
     env.configBase = path.dirname(env.configBase);
-    verb.emit('pre-load');
-    require(verbfile)(verb);
+    verbInst.emit('pre-load');
+    require(verbfile)(verbInst);
   } else {
     // this is what actually loads up the verbfile
-    verb.emit('pre-load');
+    verbInst.emit('pre-load');
     require(verbfile);
   }
 
   gutil.log('using verbfile', tildify(verbfile));
 
-  // require verb
-  var verbInst = require(env.modulePath);
   logEvents(verbInst);
 
   process.nextTick(function () {
