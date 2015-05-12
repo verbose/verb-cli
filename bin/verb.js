@@ -21,6 +21,13 @@ var prettyTime = require('pretty-hrtime');
 var argv = require('minimist')(process.argv.slice(2));
 
 /**
+ * Check for verbfiles first
+ */
+
+var hasVerbmd = fs.existsSync(path.join(process.cwd(), '.verb.md'));
+var hasVerbfile = fs.existsSync(path.join(process.cwd(), 'verbfile.js'));
+
+/**
  * Local dependencies
  */
 
@@ -77,8 +84,10 @@ cli.on('respawn', function (flags, child) {
   gutil.log('Respawned to PID:', pid);
 });
 
+var cwd = argv.cwd || (hasVerbmd ? process.cwd() : null);
+
 cli.launch({
-  cwd: argv.cwd,
+  cwd: cwd,
   configPath: argv.verbfile,
   require: argv.require,
   completion: argv.completion
@@ -98,7 +107,7 @@ function run(env) {
   }
 
   // `node_modules/verb`
-  if (!verbfile || !env.modulePath || !fs.existsSync(env.modulePath)) {
+  if (!env.modulePath || !fs.existsSync(env.modulePath)) {
     /* deps: verb */
     env.modulePath = resolve.sync('verb');
   }
@@ -112,26 +121,23 @@ function run(env) {
   // require verb
   var verbInst = require(env.modulePath);
   verbInst.extend('argv', argv);
-  verbInst.emit('init');
+  verbInst.emit('loaded');
 
   if (!argv._.length && argv.no) {
     exit(0);
   }
 
   // `verbfile.js`
-  if (!verbfile) {
+  if ((hasVerbmd && !hasVerbfile) || !verbfile) {
     verbfile = resolve.sync('verb-default');
     env.configBase = path.dirname(env.configBase);
-    verbInst.emit('pre-load');
     require(verbfile)(verbInst);
   } else {
     // this is what actually loads up the verbfile
-    verbInst.emit('pre-load');
     require(verbfile);
   }
 
   gutil.log('using verbfile', tildify(verbfile));
-
   logEvents(verbInst);
 
   process.nextTick(function () {
