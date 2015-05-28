@@ -13,10 +13,10 @@ var path = require('path');
 var archy = require('archy');
 var chalk = require('chalk');
 var tildify = require('tildify');
-var gutil = require('gulp-util');
 var Liftoff = require('liftoff');
 var v8flags = require('v8flags');
 var resolve = require('resolve');
+var verbLog = require('verb-log');
 var prettyTime = require('pretty-hrtime');
 var argv = require('minimist')(process.argv.slice(2));
 
@@ -66,22 +66,22 @@ var simpleTasksFlag = argv['tasks-simple'];
 var shouldLog = !argv.silent && !simpleTasksFlag;
 
 if (!shouldLog) {
-  gutil.log = function(){};
+  verbLog = function(){};
 }
 
 cli.on('require', function(name) {
-  gutil.log('Requiring external module', chalk.magenta(name));
+  verbLog('Requiring external module', chalk.magenta(name));
 });
 
 cli.on('requireFail', function(name) {
-  gutil.log(chalk.red('Failed to load external module'), chalk.magenta(name));
+  verbLog(chalk.red('Failed to load external module'), chalk.magenta(name));
 });
 
 cli.on('respawn', function (flags, child) {
   var nodeFlags = chalk.magenta(flags.join(', '));
   var pid = chalk.magenta(child.pid);
-  gutil.log('Node flags detected:', nodeFlags);
-  gutil.log('Respawned to PID:', pid);
+  verbLog('Node flags detected:', nodeFlags);
+  verbLog('Respawned to PID:', pid);
 });
 
 var cwd = argv.cwd || (hasVerbmd ? process.cwd() : null);
@@ -100,9 +100,9 @@ function run(env) {
   var verbfile = env.configPath;
 
   if (versionFlag && tasks.length === 0) {
-    gutil.log('CLI version', pkg.version);
+    verbLog('CLI version', pkg.version);
     if (env.modulePackage && typeof env.modulePackage.version !== 'undefined') {
-      gutil.log('Local version', env.modulePackage.version);
+      verbLog('Local version', env.modulePackage.version);
     }
   }
 
@@ -115,7 +115,7 @@ function run(env) {
   // chdir before requiring `verbfile.js` to allow users to chdir as needed
   if (process.cwd() !== env.cwd) {
     process.chdir(env.cwd);
-    gutil.log('working directory changed to', tildify(env.cwd));
+    verbLog('working directory changed to', tildify(env.cwd));
   }
 
   // require verb
@@ -137,7 +137,7 @@ function run(env) {
     require(verbfile);
   }
 
-  gutil.log('using verbfile', tildify(verbfile));
+  verbLog('using verbfile', tildify(verbfile));
   logEvents(verbInst);
 
   process.nextTick(function () {
@@ -159,7 +159,7 @@ function logTasks(env, localVerb) {
     if (v.trim().length === 0) {
       return;
     }
-    gutil.log(v);
+    verbLog(v);
   });
 }
 
@@ -195,24 +195,24 @@ function logEvents(verbInst) {
   });
 
   verbInst.on('task_start', function (e) {
-    gutil.log('starting', '\'' + chalk.cyan(e.task) + '\'');
+    verbLog('starting', '\'' + chalk.cyan(e.task) + '\'');
   });
 
   verbInst.on('task_stop', function (e) {
     var time = prettyTime(e.hrDuration);
-    gutil.log('finished', '\'' + chalk.cyan(e.task) + '\'', 'after', chalk.magenta(time));
+    verbLog('finished', '\'' + chalk.cyan(e.task) + '\'', 'after', chalk.magenta(time));
   });
 
   verbInst.on('task_err', function (e) {
     var msg = formatError(e);
     var time = prettyTime(e.hrDuration);
-    gutil.log(chalk.cyan(e.task), chalk.red('errored after'), chalk.magenta(time));
-    gutil.log(msg);
+    verbLog(chalk.cyan(e.task), chalk.red('errored after'), chalk.magenta(time));
+    verbLog(msg);
   });
 
   verbInst.on('task_not_found', function (err) {
-    gutil.log(chalk.red('task \'' + err.task + '\' is not in your verbfile'));
-    gutil.log('please check the documentation for proper verbfile formatting');
+    verbLog(chalk.red('task \'' + err.task + '\' is not in your verbfile'));
+    verbLog('please check the documentation for proper verbfile formatting');
     exit(1);
   });
 }
