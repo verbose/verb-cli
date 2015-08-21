@@ -147,7 +147,10 @@ function run(env) {
     if (tasksFlag) {
       return logTasks(env, verbInst);
     }
-    verbInst.run.apply(verbInst, toRun);
+
+    verbInst.run(toRun, function (err) {
+      if (err) console.error(err);
+    });
   });
 }
 
