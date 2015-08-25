@@ -36,6 +36,8 @@
     "resolve": "^1.1.6",
     "tildify": "^1.1.0",
     "v8flags": "^2.0.10",
+    "verb": "^0.8.8",
+    "verb-default": "^1.1.0",
     "verb-log": "^0.2.0"
   },
   "verb": {
